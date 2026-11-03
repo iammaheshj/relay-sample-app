@@ -77,6 +77,7 @@ export function App() {
             <label htmlFor="user-email">Email</label>{" "}
             <input
               id="user-email"
+              type="email"
               inputMode="email"
               autoComplete="email"
               value={email}

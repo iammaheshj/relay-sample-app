@@ -26,7 +26,7 @@ export function createUser(users: User[], input: NewUserInput): CreateUserResult
   const emailPattern = /^\S+@\S+\.\S+$/;
   if (!emailPattern.test(email)) return { ok: false, users, error: "Email is invalid" };
 
-  const duplicate = users.some((u) => u.email.toLowerCase() === email);
+  const duplicate = users.some((u) => u.email === email);
   if (duplicate) return { ok: false, users, error: "Email already exists" };
 
   const id = users.reduce((max, u) => Math.max(max, u.id), 0) + 1;
