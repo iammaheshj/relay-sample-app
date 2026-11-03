@@ -13,6 +13,7 @@ test("Sample behaviour", async ({ page }) => {
   await page.getByRole("button", { name: "Add" }).click();
 
   // Then the sample result is shown
-  await expect(page.getByRole("list", { name: "Items" })).toContainText("Sample item");
+  const items = page.getByRole("list", { name: "Items" });
+  await expect(items).toContainText("Sample item");
   await expect(page.getByRole("status")).toHaveText("1 left to do");
 });
