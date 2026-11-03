@@ -1,4 +1,4 @@
-import { type FormEvent, useState } from "react";
+import { type FormEvent, useId, useState } from "react";
 import { addTodo, remaining, removeTodo, type Todo, toggleTodo } from "./todos";
 import { createUser, type User } from "./users";
 
@@ -10,6 +10,7 @@ export function App() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [userError, setUserError] = useState<string | null>(null);
+  const userErrorId = useId();
 
   function submitTodo(event: FormEvent) {
     event.preventDefault();
@@ -19,6 +20,7 @@ export function App() {
 
   function submitUser(event: FormEvent) {
     event.preventDefault();
+
     const result = createUser(users, { name, email });
     if (!result.ok) {
       setUserError(result.error);
@@ -68,10 +70,17 @@ export function App() {
 
       <section aria-labelledby="users-heading">
         <h2 id="users-heading">Users</h2>
-        <form onSubmit={submitUser} aria-describedby={userError ? "user-error" : undefined}>
+        <form onSubmit={submitUser} aria-describedby={userError ? userErrorId : undefined}>
           <div>
             <label htmlFor="user-name">Name</label>{" "}
-            <input id="user-name" value={name} onChange={(e) => setName(e.target.value)} />
+            <input
+              id="user-name"
+              value={name}
+              onChange={(e) => {
+                setName(e.target.value);
+                if (userError) setUserError(null);
+              }}
+            />
           </div>
           <div>
             <label htmlFor="user-email">Email</label>{" "}
@@ -81,12 +90,15 @@ export function App() {
               inputMode="email"
               autoComplete="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                if (userError) setUserError(null);
+              }}
             />
           </div>
           <button type="submit">Create user</button>
           {userError ? (
-            <p id="user-error" role="alert">
+            <p id={userErrorId} role="alert">
               {userError}
             </p>
           ) : null}

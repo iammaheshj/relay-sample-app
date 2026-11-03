@@ -30,6 +30,15 @@ describe("createUser", () => {
     expect(result).toEqual({ ok: false, users: existing, error: "Email already exists" });
   });
 
+  it("clears duplicate error once email changes and is unique", () => {
+    const existing: User[] = [{ id: 1, name: "A", email: "ada@example.com" }];
+    const duplicate = createUser(existing, { name: "B", email: "ADA@EXAMPLE.COM" });
+    expect(duplicate).toEqual({ ok: false, users: existing, error: "Email already exists" });
+
+    const ok = createUser(existing, { name: "B", email: "grace@example.com" });
+    expect(ok.ok).toBe(true);
+  });
+
   it("assigns increasing ids", () => {
     const a = createUser([], { name: "Ada", email: "ada@example.com" });
     if (!a.ok) throw new Error("expected ok result");
