@@ -1,5 +1,6 @@
-import { type FormEvent, useId, useState } from "react";
+import { type FormEvent, useId, useMemo, useState } from "react";
 import { addTodo, remaining, removeTodo, type Todo, toggleTodo } from "./todos";
+import { createEmployee, deleteEmployee, findEmployeeById, type Employee, updateEmployee } from "./employees";
 import { createUser, type User } from "./users";
 
 export function App() {
@@ -11,6 +12,23 @@ export function App() {
   const [email, setEmail] = useState("");
   const [userError, setUserError] = useState<string | null>(null);
   const userErrorId = useId();
+
+  const [employees, setEmployees] = useState<Employee[]>([]);
+  const [newFirstName, setNewFirstName] = useState("");
+  const [newLastName, setNewLastName] = useState("");
+  const [employeeError, setEmployeeError] = useState<string | null>(null);
+  const employeeErrorId = useId();
+
+  const [selectedEmployeeId, setSelectedEmployeeId] = useState<number | null>(null);
+  const selectedEmployee = useMemo(() => {
+    if (selectedEmployeeId === null) return null;
+    return findEmployeeById(employees, selectedEmployeeId) ?? null;
+  }, [employees, selectedEmployeeId]);
+
+  const [editFirstName, setEditFirstName] = useState("");
+  const [editLastName, setEditLastName] = useState("");
+
+  const [confirmDelete, setConfirmDelete] = useState(false);
 
   function submitTodo(event: FormEvent) {
     event.preventDefault();
@@ -31,6 +49,61 @@ export function App() {
     setName("");
     setEmail("");
     setUserError(null);
+  }
+
+  function submitEmployee(event: FormEvent) {
+    event.preventDefault();
+
+    const result = createEmployee(employees, { firstName: newFirstName, lastName: newLastName });
+    if (!result.ok) {
+      setEmployeeError(result.error);
+      return;
+    }
+
+    setEmployees(result.employees);
+    setNewFirstName("");
+    setNewLastName("");
+    setEmployeeError(null);
+  }
+
+  function openEmployee(id: number) {
+    const employee = findEmployeeById(employees, id);
+    if (!employee) return;
+
+    setSelectedEmployeeId(id);
+    setEditFirstName(employee.firstName);
+    setEditLastName(employee.lastName);
+    setConfirmDelete(false);
+    setEmployeeError(null);
+  }
+
+  function saveSelectedEmployee() {
+    if (selectedEmployeeId === null) return;
+
+    const result = updateEmployee(employees, selectedEmployeeId, { firstName: editFirstName, lastName: editLastName });
+    if (!result.ok) {
+      setEmployeeError(result.error);
+      return;
+    }
+
+    setEmployees(result.employees);
+    setEmployeeError(null);
+  }
+
+  function requestDeleteSelectedEmployee() {
+    // Confirmation is in UI state to make e2e predictable and accessible.
+    setConfirmDelete(true);
+  }
+
+  function confirmDeleteSelectedEmployee() {
+    if (selectedEmployeeId === null) return;
+
+    setEmployees((current) => deleteEmployee(current, selectedEmployeeId));
+    setSelectedEmployeeId(null);
+    setEditFirstName("");
+    setEditLastName("");
+    setConfirmDelete(false);
+    setEmployeeError(null);
   }
 
   return (
@@ -111,6 +184,110 @@ export function App() {
             </li>
           ))}
         </ul>
+      </section>
+
+      <hr />
+
+      {/* In this single-page app, the “Employees” section acts as the “Employees screen”. */}
+      <section aria-labelledby="employees-heading">
+        <h2 id="employees-heading">Employees</h2>
+
+        <form onSubmit={submitEmployee} aria-describedby={employeeError ? employeeErrorId : undefined}>
+          <div>
+            <label htmlFor="new-employee-first-name">First Name</label>{" "}
+            <input
+              id="new-employee-first-name"
+              value={newFirstName}
+              onChange={(e) => {
+                setNewFirstName(e.target.value);
+                if (employeeError) setEmployeeError(null);
+              }}
+            />
+          </div>
+          <div>
+            <label htmlFor="new-employee-last-name">Last Name</label>{" "}
+            <input
+              id="new-employee-last-name"
+              value={newLastName}
+              onChange={(e) => {
+                setNewLastName(e.target.value);
+                if (employeeError) setEmployeeError(null);
+              }}
+            />
+          </div>
+          <button type="submit">Save employee</button>
+          {employeeError ? (
+            <p id={employeeErrorId} role="alert">
+              {employeeError}
+            </p>
+          ) : null}
+        </form>
+
+        <ul aria-label="Employees">
+          {employees.map((e) => {
+            const label = `${e.firstName} ${e.lastName}`;
+            return (
+              <li key={e.id}>
+                {label}{" "}
+                <button type="button" aria-label={`Open ${label}`} onClick={() => openEmployee(e.id)}>
+                  Open
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+
+        <section aria-label="Employee details">
+          {selectedEmployee ? (
+            <div>
+              <h3>
+                {selectedEmployee.firstName} {selectedEmployee.lastName}
+              </h3>
+              <div>
+                <label htmlFor="employee-first-name">First Name</label>{" "}
+                <input
+                  id="employee-first-name"
+                  value={editFirstName}
+                  onChange={(e) => {
+                    setEditFirstName(e.target.value);
+                    if (employeeError) setEmployeeError(null);
+                  }}
+                />
+              </div>
+              <div>
+                <label htmlFor="employee-last-name">Last Name</label>{" "}
+                <input
+                  id="employee-last-name"
+                  value={editLastName}
+                  onChange={(e) => {
+                    setEditLastName(e.target.value);
+                    if (employeeError) setEmployeeError(null);
+                  }}
+                />
+              </div>
+              <button type="button" onClick={saveSelectedEmployee}>
+                Save changes
+              </button>{" "}
+              <button type="button" onClick={requestDeleteSelectedEmployee}>
+                Delete employee
+              </button>
+
+              {confirmDelete ? (
+                <div>
+                  <p>Are you sure?</p>
+                  <button type="button" onClick={confirmDeleteSelectedEmployee}>
+                    Confirm delete
+                  </button>{" "}
+                  <button type="button" onClick={() => setConfirmDelete(false)}>
+                    Cancel
+                  </button>
+                </div>
+              ) : null}
+            </div>
+          ) : (
+            <p>Select an employee to view details.</p>
+          )}
+        </section>
       </section>
     </main>
   );
