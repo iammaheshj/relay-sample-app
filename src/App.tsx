@@ -1,4 +1,4 @@
-import { type FormEvent, useId, useState } from "react";
+import { type FormEvent, useId, useMemo, useState } from "react";
 import { addTodo, remaining, removeTodo, type Todo, toggleTodo } from "./todos";
 import { createEmployee, deleteEmployee, findEmployeeById, type Employee, updateEmployee } from "./employees";
 import { createUser, type User } from "./users";
@@ -20,7 +20,15 @@ export function App() {
   const employeeErrorId = useId();
 
   const [selectedEmployeeId, setSelectedEmployeeId] = useState<number | null>(null);
-  const selectedEmployee = selectedEmployeeId === null ? null : findEmployeeById(employees, selectedEmployeeId) ?? null;
+  const selectedEmployee = useMemo(() => {
+    if (selectedEmployeeId === null) return null;
+    return findEmployeeById(employees, selectedEmployeeId) ?? null;
+  }, [employees, selectedEmployeeId]);
+
+  const [editFirstName, setEditFirstName] = useState("");
+  const [editLastName, setEditLastName] = useState("");
+
+  const [confirmDelete, setConfirmDelete] = useState(false);
 
   function submitTodo(event: FormEvent) {
     event.preventDefault();
@@ -58,13 +66,21 @@ export function App() {
     setEmployeeError(null);
   }
 
+  function openEmployee(id: number) {
+    const employee = findEmployeeById(employees, id);
+    if (!employee) return;
+
+    setSelectedEmployeeId(id);
+    setEditFirstName(employee.firstName);
+    setEditLastName(employee.lastName);
+    setConfirmDelete(false);
+    setEmployeeError(null);
+  }
+
   function saveSelectedEmployee() {
     if (selectedEmployeeId === null) return;
 
-    const firstName = (document.getElementById("employee-first-name") as HTMLInputElement | null)?.value ?? "";
-    const lastName = (document.getElementById("employee-last-name") as HTMLInputElement | null)?.value ?? "";
-
-    const result = updateEmployee(employees, selectedEmployeeId, { firstName, lastName });
+    const result = updateEmployee(employees, selectedEmployeeId, { firstName: editFirstName, lastName: editLastName });
     if (!result.ok) {
       setEmployeeError(result.error);
       return;
@@ -75,16 +91,17 @@ export function App() {
   }
 
   function requestDeleteSelectedEmployee() {
-    // confirmation is in the UI state to make e2e predictable and accessible
+    // Confirmation is in UI state to make e2e predictable and accessible.
     setConfirmDelete(true);
   }
 
-  const [confirmDelete, setConfirmDelete] = useState(false);
-
   function confirmDeleteSelectedEmployee() {
     if (selectedEmployeeId === null) return;
+
     setEmployees((current) => deleteEmployee(current, selectedEmployeeId));
     setSelectedEmployeeId(null);
+    setEditFirstName("");
+    setEditLastName("");
     setConfirmDelete(false);
     setEmployeeError(null);
   }
@@ -212,7 +229,7 @@ export function App() {
             return (
               <li key={e.id}>
                 {label}{" "}
-                <button type="button" aria-label={`Open ${label}`} onClick={() => setSelectedEmployeeId(e.id)}>
+                <button type="button" aria-label={`Open ${label}`} onClick={() => openEmployee(e.id)}>
                   Open
                 </button>
               </li>
@@ -223,13 +240,16 @@ export function App() {
         <section aria-label="Employee details">
           {selectedEmployee ? (
             <div>
-              <h3>{selectedEmployee.firstName} {selectedEmployee.lastName}</h3>
+              <h3>
+                {selectedEmployee.firstName} {selectedEmployee.lastName}
+              </h3>
               <div>
                 <label htmlFor="employee-first-name">First Name</label>{" "}
                 <input
                   id="employee-first-name"
-                  defaultValue={selectedEmployee.firstName}
-                  onChange={() => {
+                  value={editFirstName}
+                  onChange={(e) => {
+                    setEditFirstName(e.target.value);
                     if (employeeError) setEmployeeError(null);
                   }}
                 />
@@ -238,8 +258,9 @@ export function App() {
                 <label htmlFor="employee-last-name">Last Name</label>{" "}
                 <input
                   id="employee-last-name"
-                  defaultValue={selectedEmployee.lastName}
-                  onChange={() => {
+                  value={editLastName}
+                  onChange={(e) => {
+                    setEditLastName(e.target.value);
                     if (employeeError) setEmployeeError(null);
                   }}
                 />

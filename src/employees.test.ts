@@ -74,6 +74,15 @@ describe("updateEmployee", () => {
     const result = updateEmployee(employees, 1, { lastName: "  " });
     expect(result).toEqual({ ok: false, employees, error: "Last name is required" });
   });
+
+  it("does not mutate the original array", () => {
+    const employees: Employee[] = [{ id: 1, firstName: "Alex", lastName: "Kim" }];
+    const snapshot = structuredClone(employees);
+
+    updateEmployee(employees, 1, { lastName: "Kumar" });
+
+    expect(employees).toEqual(snapshot);
+  });
 });
 
 describe("deleteEmployee", () => {
