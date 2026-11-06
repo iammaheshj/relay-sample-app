@@ -26,15 +26,15 @@ describe("addTodo", () => {
 
   it("does not reuse an id after deleting the last item", () => {
     const state = addTodo(addTodo(createTodoState(), "a"), "b");
-    const bId = state.todos.find((t) => t.title === "b")?.id;
-    expect(bId).toBeTypeOf("number");
+    const b = state.todos.find((t) => t.title === "b");
+    expect(b).toBeDefined();
 
-    const afterDelete = removeTodo(state, bId as number);
+    const afterDelete = removeTodo(state, b!.id);
     const afterAdd = addTodo(afterDelete, "c");
 
-    const cId = afterAdd.todos.find((t) => t.title === "c")?.id;
-    expect(cId).toBeTypeOf("number");
-    expect(cId).not.toBe(bId);
+    const c = afterAdd.todos.find((t) => t.title === "c");
+    expect(c).toBeDefined();
+    expect(c!.id).not.toBe(b!.id);
   });
 });
 
