@@ -24,3 +24,27 @@ test("Delete an item", async ({ page }) => {
   await page.getByRole("button", { name: "Delete Pay rent" }).click();
   await expect(page.getByRole("list", { name: "Items" })).not.toContainText("Pay rent");
 });
+
+test("Rename an item", async ({ page }) => {
+  await page.getByLabel("New item").fill("Pay rnet");
+  await page.getByRole("button", { name: "Add" }).click();
+
+  page.once("dialog", async (dialog) => {
+    await dialog.accept("Pay rent");
+  });
+  await page.getByRole("button", { name: "Rename Pay rnet" }).click();
+
+  await expect(page.getByRole("list", { name: "Items" })).toContainText("Pay rent");
+});
+
+test("A blank name keeps the old one", async ({ page }) => {
+  await page.getByLabel("New item").fill("Pay rent");
+  await page.getByRole("button", { name: "Add" }).click();
+
+  page.once("dialog", async (dialog) => {
+    await dialog.accept("   ");
+  });
+  await page.getByRole("button", { name: "Rename Pay rent" }).click();
+
+  await expect(page.getByRole("list", { name: "Items" })).toContainText("Pay rent");
+});

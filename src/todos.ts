@@ -13,6 +13,12 @@ export function addTodo(todos: Todo[], title: string): Todo[] {
   return [...todos, { id, title: trimmed, done: false }];
 }
 
+export function renameTodo(todos: Todo[], id: number, title: string): Todo[] {
+  const trimmed = title.trim();
+  if (!trimmed) return todos;
+  return todos.map((t) => (t.id === id ? { ...t, title: trimmed } : t));
+}
+
 export function toggleTodo(todos: Todo[], id: number): Todo[] {
   return todos.map((t) => (t.id === id ? { ...t, done: !t.done } : t));
 }
