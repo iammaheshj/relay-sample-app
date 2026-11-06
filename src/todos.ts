@@ -6,27 +6,34 @@ export interface Todo {
   done: boolean;
 }
 
-function nextId(todos: Todo[]): number {
-  // Never reuse ids, even if the highest id was deleted.
-  // Using the max id seen so far achieves this for the pure list operations.
-  return todos.reduce((max, t) => Math.max(max, t.id), 0) + 1;
+export interface TodoState {
+  todos: Todo[];
+  nextId: number;
 }
 
-export function addTodo(todos: Todo[], title: string): Todo[] {
+export function createTodoState(): TodoState {
+  return { todos: [], nextId: 1 };
+}
+
+export function addTodo(state: TodoState, title: string): TodoState {
   const trimmed = title.trim();
-  if (!trimmed) return todos;
-  const id = nextId(todos);
-  return [...todos, { id, title: trimmed, done: false }];
+  if (!trimmed) return state;
+
+  const todo: Todo = { id: state.nextId, title: trimmed, done: false };
+  return { todos: [...state.todos, todo], nextId: state.nextId + 1 };
 }
 
-export function toggleTodo(todos: Todo[], id: number): Todo[] {
-  return todos.map((t) => (t.id === id ? { ...t, done: !t.done } : t));
+export function toggleTodo(state: TodoState, id: number): TodoState {
+  return {
+    ...state,
+    todos: state.todos.map((t) => (t.id === id ? { ...t, done: !t.done } : t)),
+  };
 }
 
-export function removeTodo(todos: Todo[], id: number): Todo[] {
-  return todos.filter((t) => t.id !== id);
+export function removeTodo(state: TodoState, id: number): TodoState {
+  return { ...state, todos: state.todos.filter((t) => t.id !== id) };
 }
 
-export function remaining(todos: Todo[]): number {
-  return todos.filter((t) => !t.done).length;
+export function remaining(state: TodoState): number {
+  return state.todos.filter((t) => !t.done).length;
 }
