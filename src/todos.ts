@@ -21,6 +21,10 @@ export function removeTodo(todos: Todo[], id: number): Todo[] {
   return todos.filter((t) => t.id !== id);
 }
 
+export function clearCompleted(todos: Todo[]): Todo[] {
+  return todos.filter((t) => !t.done);
+}
+
 export function remaining(todos: Todo[]): number {
   return todos.filter((t) => !t.done).length;
 }
