@@ -13,6 +13,12 @@ describe("addTodo", () => {
     expect(list[0]?.title).toHaveLength(MAX_TITLE_LENGTH);
   });
 
+  it("does not alter titles at MAX_TITLE_LENGTH", () => {
+    const exact = "a".repeat(MAX_TITLE_LENGTH);
+    const list = addTodo([], exact);
+    expect(list[0]?.title).toBe(exact);
+  });
+
   it("ignores a blank title", () => {
     expect(addTodo([], "   ")).toEqual([]);
   });
