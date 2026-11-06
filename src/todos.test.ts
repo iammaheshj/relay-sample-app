@@ -3,9 +3,7 @@ import { addTodo, remaining, removeTodo, togglePriority, toggleTodo } from "./to
 
 describe("addTodo", () => {
   it("adds a trimmed item that isn't done", () => {
-    expect(addTodo([], "  Pay rent ")).toEqual([
-      { id: 1, title: "Pay rent", done: false, priority: false },
-    ]);
+    expect(addTodo([], "  Pay rent ")).toEqual([{ id: 1, title: "Pay rent", done: false, priority: false }]);
   });
 
   it("ignores a blank title", () => {
@@ -40,9 +38,15 @@ describe("togglePriority", () => {
     expect(togglePriority(list, 1)[0]).toMatchObject({ title: "Pay rent", priority: true });
   });
 
-  it("sorts high priority items first", () => {
-    const list = addTodo(addTodo([], "Buy milk"), "Pay rent");
-    const updated = togglePriority(list, 2);
-    expect(updated.map((t) => t.title)).toEqual(["Pay rent", "Buy milk"]);
+  it("sorts high priority items first and keeps id order within each group", () => {
+    const list = addTodo(addTodo(addTodo([], "c"), "a"), "b");
+
+    // Make b (id 3) high priority. It should sort ahead of non-priority items.
+    const updated = togglePriority(list, 3);
+    expect(updated.map((t) => t.title)).toEqual(["b", "c", "a"]);
+
+    // Now make a (id 2) high priority as well. It should come before b because id 2 < 3.
+    const updatedAgain = togglePriority(updated, 2);
+    expect(updatedAgain.map((t) => t.title)).toEqual(["a", "b", "c"]);
   });
 });
