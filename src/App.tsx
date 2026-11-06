@@ -11,6 +11,8 @@ export function App() {
     setTitle("");
   }
 
+  const done = doneCount(todos);
+
   return (
     <main style={{ fontFamily: "sans-serif", maxWidth: 480, margin: "2rem auto" }}>
       <h1>To-do</h1>
@@ -40,9 +42,8 @@ export function App() {
           </li>
         ))}
       </ul>
-      <p role="status">
-        {doneCount(todos)} done, {remaining(todos)} left to do
-      </p>
+      <p role="status">{done} done</p>
+      <p role="status">{remaining(todos)} left to do</p>
     </main>
   );
 }

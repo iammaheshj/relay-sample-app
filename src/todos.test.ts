@@ -37,4 +37,9 @@ describe("doneCount", () => {
     const list = addTodo(addTodo([], "a"), "b");
     expect(doneCount(toggleTodo(list, 1))).toBe(1);
   });
+
+  it("returns 0 when nothing is done", () => {
+    const list = addTodo(addTodo([], "a"), "b");
+    expect(doneCount(list)).toBe(0);
+  });
 });
