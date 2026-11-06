@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { addTodo, remaining, removeTodo, toggleTodo } from "./todos";
+import { addTodo, MAX_TITLE_LENGTH, remaining, removeTodo, toggleTodo } from "./todos";
 
 describe("addTodo", () => {
   it("adds a trimmed item that isn't done", () => {
@@ -8,6 +8,12 @@ describe("addTodo", () => {
 
   it("ignores a blank title", () => {
     expect(addTodo([], "   ")).toEqual([]);
+  });
+
+  it("cuts a long title to 100 characters", () => {
+    const longTitle = "x".repeat(150);
+    const list = addTodo([], longTitle);
+    expect(list[0]?.title).toHaveLength(MAX_TITLE_LENGTH);
   });
 
   it("gives each item a new id", () => {
