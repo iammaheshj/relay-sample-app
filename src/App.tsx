@@ -1,5 +1,5 @@
 import { type FormEvent, useState } from "react";
-import { addTodo, remaining, removeTodo, type Todo, toggleTodo } from "./todos";
+import { addTodo, remaining, removeTodo, renameTodo, type Todo, toggleTodo } from "./todos";
 
 export function App() {
   const [todos, setTodos] = useState<Todo[]>([]);
@@ -29,6 +29,14 @@ export function App() {
                 onChange={() => setTodos((current) => toggleTodo(current, todo.id))}
               />{" "}
               <span style={{ textDecoration: todo.done ? "line-through" : "none" }}>{todo.title}</span>
+            </label>{" "}
+            <label>
+              <span className="sr-only">Rename {todo.title}</span>{" "}
+              <input
+                aria-label={`Rename ${todo.title}`}
+                defaultValue={todo.title}
+                onBlur={(e) => setTodos((current) => renameTodo(current, todo.id, e.target.value))}
+              />
             </label>{" "}
             <button
               type="button"
