@@ -1,5 +1,5 @@
 import { type FormEvent, useState } from "react";
-import { addTodo, remaining, removeTodo, type Todo, toggleTodo } from "./todos";
+import { addTodo, remaining, removeTodo, renameTodo, type Todo, toggleTodo } from "./todos";
 
 export function App() {
   const [todos, setTodos] = useState<Todo[]>([]);
@@ -30,6 +30,17 @@ export function App() {
               />{" "}
               <span style={{ textDecoration: todo.done ? "line-through" : "none" }}>{todo.title}</span>
             </label>{" "}
+            <button
+              type="button"
+              aria-label={`Rename ${todo.title}`}
+              onClick={() => {
+                const result = window.prompt("Rename item", todo.title);
+                if (result === null) return;
+                setTodos((current) => renameTodo(current, todo.id, result));
+              }}
+            >
+              Rename
+            </button>{" "}
             <button
               type="button"
               aria-label={`Delete ${todo.title}`}
