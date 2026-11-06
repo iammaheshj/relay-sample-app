@@ -26,6 +26,11 @@ describe("renameTodo", () => {
     const list = addTodo([], "Pay rent");
     expect(renameTodo(list, 1, "   ").map((t) => t.title)).toEqual(["Pay rent"]);
   });
+
+  it("returns the original array when no item matches", () => {
+    const list = addTodo([], "Pay rent");
+    expect(renameTodo(list, 999, "New title")).toBe(list);
+  });
 });
 
 describe("toggleTodo and removeTodo", () => {
