@@ -6,8 +6,10 @@ export interface Todo {
   done: boolean;
 }
 
+export const MAX_TITLE_LENGTH = 100;
+
 export function addTodo(todos: Todo[], title: string): Todo[] {
-  const trimmed = title.trim();
+  const trimmed = title.trim().slice(0, MAX_TITLE_LENGTH);
   if (!trimmed) return todos;
   const id = todos.reduce((max, t) => Math.max(max, t.id), 0) + 1;
   return [...todos, { id, title: trimmed, done: false }];
