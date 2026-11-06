@@ -30,10 +30,8 @@ export function App() {
               />{" "}
               <span style={{ textDecoration: todo.done ? "line-through" : "none" }}>{todo.title}</span>
             </label>{" "}
-            <label>
-              <span className="sr-only">Rename {todo.title}</span>{" "}
+            <label aria-label={`Rename ${todo.title}`}>
               <input
-                aria-label={`Rename ${todo.title}`}
                 defaultValue={todo.title}
                 onBlur={(e) => setTodos((current) => renameTodo(current, todo.id, e.target.value))}
               />
