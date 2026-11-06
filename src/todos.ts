@@ -7,7 +7,10 @@ export interface Todo {
 }
 
 function nextId(todos: Todo[]): number {
-  // Never reuse an id, even if items were deleted.
+  // Never reuse an id.
+  //
+  // Using (max current id + 1) is stable for a single session even if items are
+  // deleted.
   return todos.reduce((max, t) => Math.max(max, t.id), 0) + 1;
 }
 

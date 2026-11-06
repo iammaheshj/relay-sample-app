@@ -25,7 +25,7 @@ describe("addTodo", () => {
     const cId = abc.find((t) => t.title === "c")?.id;
 
     expect(cId).toBeDefined();
-    expect(cId).not.toBe(bId);
+    expect(cId).toBeGreaterThan(bId!);
   });
 });
 
