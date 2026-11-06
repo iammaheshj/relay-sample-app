@@ -1,33 +1,55 @@
 import { describe, expect, it } from "vitest";
-import { addTodo, remaining, removeTodo, toggleTodo } from "./todos";
+import {
+  addTodo,
+  createTodoState,
+  remaining,
+  removeTodo,
+  toggleTodo,
+  type TodoState,
+} from "./todos";
 
 describe("addTodo", () => {
   it("adds a trimmed item that isn't done", () => {
-    expect(addTodo([], "  Pay rent ")).toEqual([{ id: 1, title: "Pay rent", done: false }]);
+    const state = addTodo(createTodoState(), "  Pay rent ");
+    expect(state.todos).toEqual([{ id: 1, title: "Pay rent", done: false }]);
   });
 
   it("ignores a blank title", () => {
-    expect(addTodo([], "   ")).toEqual([]);
+    const state = addTodo(createTodoState(), "   ");
+    expect(state.todos).toEqual([]);
   });
 
   it("gives each item a new id", () => {
-    const list = addTodo(addTodo([], "a"), "b");
-    expect(list.map((t) => t.id)).toEqual([1, 2]);
+    const state = addTodo(addTodo(createTodoState(), "a"), "b");
+    expect(state.todos.map((t) => t.id)).toEqual([1, 2]);
+  });
+
+  it("does not reuse an id after deleting the last item", () => {
+    const state = addTodo(addTodo(createTodoState(), "a"), "b");
+    const b = state.todos.find((t) => t.title === "b");
+    expect(b).toBeDefined();
+
+    const afterDelete = removeTodo(state, b!.id);
+    const afterAdd = addTodo(afterDelete, "c");
+
+    const c = afterAdd.todos.find((t) => t.title === "c");
+    expect(c).toBeDefined();
+    expect(c!.id).not.toBe(b!.id);
   });
 });
 
 describe("toggleTodo and removeTodo", () => {
-  const list = addTodo(addTodo([], "a"), "b");
+  const state: TodoState = addTodo(addTodo(createTodoState(), "a"), "b");
 
   it("marks only the chosen item done", () => {
-    expect(toggleTodo(list, 2).map((t) => t.done)).toEqual([false, true]);
+    expect(toggleTodo(state, 2).todos.map((t) => t.done)).toEqual([false, true]);
   });
 
   it("removes only the chosen item", () => {
-    expect(removeTodo(list, 1).map((t) => t.title)).toEqual(["b"]);
+    expect(removeTodo(state, 1).todos.map((t) => t.title)).toEqual(["b"]);
   });
 
   it("counts items left to do", () => {
-    expect(remaining(toggleTodo(list, 1))).toBe(1);
+    expect(remaining(toggleTodo(state, 1))).toBe(1);
   });
 });
