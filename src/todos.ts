@@ -26,6 +26,6 @@ export function remaining(todos: Todo[]): number {
 }
 
 export function statusText(remainingCount: number): string {
-  if (remainingCount === 0) return "Nothing left to do";
+  if (!Number.isFinite(remainingCount) || remainingCount <= 0) return "Nothing left to do";
   return `${remainingCount} left to do`;
 }

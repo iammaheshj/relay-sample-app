@@ -37,7 +37,11 @@ describe("statusText", () => {
     expect(statusText(0)).toBe("Nothing left to do");
   });
 
-  it("uses the count for non-zero", () => {
+  it("says nothing left to do for negative", () => {
+    expect(statusText(-1)).toBe("Nothing left to do");
+  });
+
+  it("uses the count for positive numbers", () => {
     expect(statusText(2)).toBe("2 left to do");
   });
 });
