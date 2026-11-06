@@ -9,6 +9,9 @@ export interface Todo {
 export function addTodo(todos: Todo[], title: string): Todo[] {
   const trimmed = title.trim();
   if (!trimmed) return todos;
+
+  // Never reuse an id that has existed before. If ids are 1..N, the next id is
+  // always (max id) + 1, even if the item with max id was deleted.
   const id = todos.reduce((max, t) => Math.max(max, t.id), 0) + 1;
   return [...todos, { id, title: trimmed, done: false }];
 }
