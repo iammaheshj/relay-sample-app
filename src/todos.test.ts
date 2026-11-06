@@ -1,9 +1,22 @@
 import { describe, expect, it } from "vitest";
-import { addTodo, remaining, removeTodo, toggleTodo } from "./todos";
+import { MAX_TITLE_LENGTH, addTodo, remaining, removeTodo, toggleTodo } from "./todos";
 
 describe("addTodo", () => {
   it("adds a trimmed item that isn't done", () => {
     expect(addTodo([], "  Pay rent ")).toEqual([{ id: 1, title: "Pay rent", done: false }]);
+  });
+
+  it("cuts long titles to MAX_TITLE_LENGTH", () => {
+    const longTitle = "a".repeat(MAX_TITLE_LENGTH + 50);
+    const list = addTodo([], longTitle);
+    expect(list).toHaveLength(1);
+    expect(list[0]?.title).toHaveLength(MAX_TITLE_LENGTH);
+  });
+
+  it("does not alter titles at MAX_TITLE_LENGTH", () => {
+    const exact = "a".repeat(MAX_TITLE_LENGTH);
+    const list = addTodo([], exact);
+    expect(list[0]?.title).toBe(exact);
   });
 
   it("ignores a blank title", () => {
