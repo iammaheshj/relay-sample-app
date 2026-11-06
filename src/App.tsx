@@ -1,5 +1,5 @@
 import { type FormEvent, useState } from "react";
-import { addTodo, remaining, removeTodo, type Todo, toggleTodo } from "./todos";
+import { addTodo, remaining, removeTodo, statusText, type Todo, toggleTodo } from "./todos";
 
 export function App() {
   const [todos, setTodos] = useState<Todo[]>([]);
@@ -10,6 +10,8 @@ export function App() {
     setTodos((current) => addTodo(current, title));
     setTitle("");
   }
+
+  const remainingCount = remaining(todos);
 
   return (
     <main style={{ fontFamily: "sans-serif", maxWidth: 480, margin: "2rem auto" }}>
@@ -40,7 +42,7 @@ export function App() {
           </li>
         ))}
       </ul>
-      <p role="status">{remaining(todos)} left to do</p>
+      <p role="status">{statusText(remainingCount)}</p>
     </main>
   );
 }
