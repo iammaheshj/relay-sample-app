@@ -24,3 +24,8 @@ export function removeTodo(todos: Todo[], id: number): Todo[] {
 export function remaining(todos: Todo[]): number {
   return todos.filter((t) => !t.done).length;
 }
+
+export function statusText(remainingCount: number): string {
+  if (!Number.isFinite(remainingCount) || remainingCount <= 0) return "Nothing left to do";
+  return `${remainingCount} left to do`;
+}

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { addTodo, remaining, removeTodo, toggleTodo } from "./todos";
+import { addTodo, remaining, removeTodo, statusText, toggleTodo } from "./todos";
 
 describe("addTodo", () => {
   it("adds a trimmed item that isn't done", () => {
@@ -29,5 +29,19 @@ describe("toggleTodo and removeTodo", () => {
 
   it("counts items left to do", () => {
     expect(remaining(toggleTodo(list, 1))).toBe(1);
+  });
+});
+
+describe("statusText", () => {
+  it("says nothing left to do for zero", () => {
+    expect(statusText(0)).toBe("Nothing left to do");
+  });
+
+  it("says nothing left to do for negative", () => {
+    expect(statusText(-1)).toBe("Nothing left to do");
+  });
+
+  it("uses the count for positive numbers", () => {
+    expect(statusText(2)).toBe("2 left to do");
   });
 });

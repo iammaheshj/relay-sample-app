@@ -11,11 +11,11 @@ test("Add an item", async ({ page }) => {
   await expect(page.getByRole("status")).toHaveText("1 left to do");
 });
 
-test("Complete an item", async ({ page }) => {
+test("Nothing left to do", async ({ page }) => {
   await page.getByLabel("New item").fill("Pay rent");
   await page.getByRole("button", { name: "Add" }).click();
   await page.getByRole("checkbox").check();
-  await expect(page.getByRole("status")).toHaveText("0 left to do");
+  await expect(page.getByRole("status")).toHaveText("Nothing left to do");
 });
 
 test("Delete an item", async ({ page }) => {
