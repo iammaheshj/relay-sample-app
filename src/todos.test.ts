@@ -14,6 +14,19 @@ describe("addTodo", () => {
     const list = addTodo(addTodo([], "a"), "b");
     expect(list.map((t) => t.id)).toEqual([1, 2]);
   });
+
+  it("does not reuse an id after deleting the last item", () => {
+    const list = addTodo(addTodo([], "a"), "b");
+    const bId = list.find((t) => t.title === "b")?.id;
+    expect(bId).toBeTypeOf("number");
+
+    const afterDelete = removeTodo(list, bId as number);
+    const afterAdd = addTodo(afterDelete, "c");
+
+    const cId = afterAdd.find((t) => t.title === "c")?.id;
+    expect(cId).toBeTypeOf("number");
+    expect(cId).not.toBe(bId);
+  });
 });
 
 describe("toggleTodo and removeTodo", () => {
