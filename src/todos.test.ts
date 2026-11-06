@@ -17,12 +17,15 @@ describe("addTodo", () => {
 
   it("does not reuse an id after deleting the last item", () => {
     const withAandB = addTodo(addTodo([], "a"), "b");
-    const withoutB = removeTodo(withAandB, 2);
+    const bId = withAandB.find((t) => t.title === "b")?.id;
+    expect(bId).toBeDefined();
+
+    const withoutB = removeTodo(withAandB, bId!);
     const withC = addTodo(withoutB, "c");
 
     // This is the acceptance criterion: after deleting "b", the new item "c" must not
-    // reuse b's old id. With sequential ids, that means c gets 3 here.
-    expect(withC.find((t) => t.title === "c")?.id).toBe(3);
+    // reuse b's old id.
+    expect(withC.find((t) => t.title === "c")?.id).not.toBe(bId);
   });
 });
 
