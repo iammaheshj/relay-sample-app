@@ -6,10 +6,21 @@ export interface Todo {
   done: boolean;
 }
 
+let nextId = 1;
+
+function ensureNextIdIsAboveUsedIds(todos: Todo[]): void {
+  const maxId = todos.reduce((max, t) => Math.max(max, t.id), 0);
+  nextId = Math.max(nextId, maxId + 1);
+}
+
 export function addTodo(todos: Todo[], title: string): Todo[] {
   const trimmed = title.trim();
   if (!trimmed) return todos;
-  const id = todos.reduce((max, t) => Math.max(max, t.id), 0) + 1;
+
+  ensureNextIdIsAboveUsedIds(todos);
+  const id = nextId;
+  nextId += 1;
+
   return [...todos, { id, title: trimmed, done: false }];
 }
 
