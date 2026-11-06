@@ -26,7 +26,9 @@ export function toggleTodo(todos: Todo[], id: number): Todo[] {
 }
 
 export function togglePriority(todos: Todo[], id: number): Todo[] {
-  return sortTodos(todos.map((t) => (t.id === id ? { ...t, priority: !t.priority } : t)));
+  return sortTodos(
+    todos.map((t) => (t.id === id ? { ...t, priority: !t.priority } : t)),
+  );
 }
 
 export function removeTodo(todos: Todo[], id: number): Todo[] {
