@@ -20,6 +20,7 @@ test("Complete an item", async ({ page }) => {
 
 test("Delete an item", async ({ page }) => {
   await page.getByLabel("New item").fill("Pay rent");
+  await page.getByRole("button", { name: "Add" }).click();
   await page.getByRole("button", { name: "Delete Pay rent" }).click();
   await expect(page.getByRole("list", { name: "Items" })).not.toContainText("Pay rent");
 });
