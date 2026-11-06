@@ -1,9 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { addTodo, remaining, removeTodo, toggleTodo } from "./todos";
+import { addTodo, remaining, removeTodo, togglePriority, toggleTodo } from "./todos";
 
 describe("addTodo", () => {
   it("adds a trimmed item that isn't done", () => {
-    expect(addTodo([], "  Pay rent ")).toEqual([{ id: 1, title: "Pay rent", done: false }]);
+    expect(addTodo([], "  Pay rent ")).toEqual([
+      { id: 1, title: "Pay rent", done: false, priority: false },
+    ]);
   });
 
   it("ignores a blank title", () => {
@@ -29,5 +31,25 @@ describe("toggleTodo and removeTodo", () => {
 
   it("counts items left to do", () => {
     expect(remaining(toggleTodo(list, 1))).toBe(1);
+  });
+});
+
+describe("togglePriority", () => {
+  it("toggles priority on the chosen item", () => {
+    const list = addTodo(addTodo([], "Buy milk"), "Pay rent");
+    const payRentId = list.find((t) => t.title === "Pay rent")?.id;
+    expect(payRentId).toBeDefined();
+
+    const updated = togglePriority(list, payRentId ?? 0);
+    expect(updated.find((t) => t.id === payRentId)?.priority).toBe(true);
+  });
+
+  it("sorts high priority items first", () => {
+    const list = addTodo(addTodo([], "Buy milk"), "Pay rent");
+    const payRentId = list.find((t) => t.title === "Pay rent")?.id;
+    expect(payRentId).toBeDefined();
+
+    const updated = togglePriority(list, payRentId ?? 0);
+    expect(updated.map((t) => t.title)[0]).toBe("Pay rent");
   });
 });
