@@ -37,4 +37,9 @@ describe("doneCount", () => {
     const list = toggleTodo(addTodo(addTodo([], "a"), "b"), 1);
     expect(doneCount(list)).toBe(1);
   });
+
+  it("is 0 when nothing is done", () => {
+    const list = addTodo(addTodo([], "a"), "b");
+    expect(doneCount(list)).toBe(0);
+  });
 });

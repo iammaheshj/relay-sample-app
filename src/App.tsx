@@ -40,7 +40,9 @@ export function App() {
           </li>
         ))}
       </ul>
-      <p role="status">{doneCount(todos)} done</p>
+      <p role="status" aria-label="Done count">
+        {doneCount(todos)} done
+      </p>
       <p role="status">{remaining(todos)} left to do</p>
     </main>
   );
