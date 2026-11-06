@@ -40,4 +40,9 @@ describe("statusText", () => {
   it("says how many items are left when remaining is nonzero", () => {
     expect(statusText(2)).toBe("2 left to do");
   });
+
+  it("is defensive about unexpected values", () => {
+    expect(statusText(-1)).toBe("Nothing left to do");
+    expect(statusText(2.9)).toBe("2 left to do");
+  });
 });
