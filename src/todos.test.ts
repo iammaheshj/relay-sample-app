@@ -40,4 +40,10 @@ describe("statusText", () => {
   it("returns the remaining count otherwise", () => {
     expect(statusText(2)).toBe("2 left to do");
   });
+
+  it("returns an empty string for invalid counts", () => {
+    expect(statusText(Number.NaN)).toBe("");
+    expect(statusText(Number.POSITIVE_INFINITY)).toBe("");
+    expect(statusText(-1)).toBe("");
+  });
 });
