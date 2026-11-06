@@ -20,6 +20,8 @@ describe("addTodo", () => {
     const withoutB = removeTodo(withAandB, 2);
     const withC = addTodo(withoutB, "c");
 
+    // This is the acceptance criterion: after deleting "b", the new item "c" must not
+    // reuse b's old id. With sequential ids, that means c gets 3 here.
     expect(withC.find((t) => t.title === "c")?.id).toBe(3);
   });
 });
