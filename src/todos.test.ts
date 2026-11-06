@@ -16,16 +16,18 @@ describe("addTodo", () => {
   });
 
   it("does not reuse an id after deleting the last item", () => {
+    // This reproduces the bug where ids were based on (todos.length + 1),
+    // causing the id of a deleted last item to be reused.
     const list = addTodo(addTodo([], "a"), "b");
     const bId = list.find((t) => t.title === "b")?.id;
-    expect(bId).toBeDefined();
+    expect(bId).toBe(2);
 
-    const afterDelete = removeTodo(list, bId!);
+    const afterDelete = removeTodo(list, bId);
     const afterAdd = addTodo(afterDelete, "c");
 
     const cId = afterAdd.find((t) => t.title === "c")?.id;
     expect(cId).toBeDefined();
-    expect(cId).not.toBe(bId);
+    expect(cId).toBe(3);
   });
 });
 
