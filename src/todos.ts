@@ -24,3 +24,10 @@ export function removeTodo(todos: Todo[], id: number): Todo[] {
 export function remaining(todos: Todo[]): number {
   return todos.filter((t) => !t.done).length;
 }
+
+export function statusText(remainingCount: number): string {
+  // Defensive against non-integer/negative values to avoid odd UI output.
+  const safeRemaining = Number.isFinite(remainingCount) ? Math.max(0, Math.floor(remainingCount)) : 0;
+  if (safeRemaining === 0) return "Nothing left to do";
+  return `${safeRemaining} left to do`;
+}
