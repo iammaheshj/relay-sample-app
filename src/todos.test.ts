@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { addTodo, remaining, removeTodo, toggleTodo } from "./todos";
+import { addTodo, clearCompleted, remaining, removeTodo, toggleTodo } from "./todos";
 
 describe("addTodo", () => {
   it("adds a trimmed item that isn't done", () => {
@@ -29,5 +29,13 @@ describe("toggleTodo and removeTodo", () => {
 
   it("counts items left to do", () => {
     expect(remaining(toggleTodo(list, 1))).toBe(1);
+  });
+});
+
+describe("clearCompleted", () => {
+  it("removes only done items", () => {
+    const list = addTodo(addTodo([], "a"), "b");
+    const withACompleted = toggleTodo(list, 1);
+    expect(clearCompleted(withACompleted).map((t) => t.title)).toEqual(["b"]);
   });
 });
