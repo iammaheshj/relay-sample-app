@@ -40,4 +40,9 @@ describe("statusText", () => {
   it("returns the count when there are items remaining", () => {
     expect(statusText(2)).toBe("2 left to do");
   });
+
+  it("is defensive about invalid numbers", () => {
+    expect(statusText(-1)).toBe("Nothing left to do");
+    expect(statusText(Number.NaN)).toBe("Nothing left to do");
+  });
 });
