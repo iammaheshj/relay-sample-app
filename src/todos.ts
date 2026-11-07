@@ -9,6 +9,7 @@ export interface Todo {
 
 function sortTodos(todos: Todo[]): Todo[] {
   return [...todos].sort((a, b) => {
+    // High priority items should sort first, then preserve stable creation order.
     if (a.priority !== b.priority) return a.priority ? -1 : 1;
     return a.id - b.id;
   });
