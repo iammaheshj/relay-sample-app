@@ -7,8 +7,7 @@ export interface Todo {
 }
 
 export function addTodo(todos: Todo[], title: string): Todo[] {
-  const trimmed = title.trim();
-  const tidied = trimmed.replace(/\s+/g, " ");
+  const tidied = title.trim().replace(/\s+/g, " ");
   if (!tidied) return todos;
   const id = todos.reduce((max, t) => Math.max(max, t.id), 0) + 1;
   return [...todos, { id, title: tidied, done: false }];
