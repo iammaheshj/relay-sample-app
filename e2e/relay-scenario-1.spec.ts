@@ -5,13 +5,21 @@ test.beforeEach(async ({ page }) => {
 });
 
 test("Line breaks and repeated spaces become single spaces", async ({ page }) => {
-  await page.getByLabel("New item").fill("Buy   milk\n and  eggs");
+  const rawTitle = "Buy   milk\n and  eggs";
+  const tidiedTitle = "Buy milk and eggs";
+
+  await page.getByLabel("New item").fill(rawTitle);
   await page.getByRole("button", { name: "Add" }).click();
 
-  const items = page.getByRole("list", { name: "Items" });
-  await expect(items).toContainText("Buy milk and eggs");
-  await expect(items).not.toContainText("Buy   milk");
+  const newItem = page.getByRole("listitem").filter({ hasText: tidiedTitle });
+  await expect(newItem).toHaveCount(1);
 
-  // Ensure the rendered title contains no newline characters.
-  await expect(items).not.toContainText(/\n/);
+  // Assert the exact title text rendered for the new item (not including the Delete button text).
+  await expect(newItem.getByText(tidiedTitle, { exact: true })).toBeVisible();
+
+  // Assert the visible title contains no repeated spaces or line breaks.
+  const titleText = await newItem.getByText(tidiedTitle, { exact: true }).textContent();
+  expect(titleText).toBe(tidiedTitle);
+  expect(titleText).not.toContain("\n");
+  expect(titleText).not.toMatch(/\s{2,}/);
 });
