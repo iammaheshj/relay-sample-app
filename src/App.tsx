@@ -1,5 +1,5 @@
 import { type FormEvent, useState } from "react";
-import { addTodo, remaining, removeTodo, type Todo, toggleTodo } from "./todos";
+import { addTodo, clearCompleted, remaining, removeTodo, type Todo, toggleTodo } from "./todos";
 
 export function App() {
   const [todos, setTodos] = useState<Todo[]>([]);
@@ -10,6 +10,8 @@ export function App() {
     setTodos((current) => addTodo(current, title));
     setTitle("");
   }
+
+  const hasCompleted = todos.some((t) => t.done);
 
   return (
     <main style={{ fontFamily: "sans-serif", maxWidth: 480, margin: "2rem auto" }}>
@@ -40,6 +42,11 @@ export function App() {
           </li>
         ))}
       </ul>
+      {hasCompleted ? (
+        <button type="button" onClick={() => setTodos((current) => clearCompleted(current))}>
+          Clear completed
+        </button>
+      ) : null}
       <p role="status">{remaining(todos)} left to do</p>
     </main>
   );

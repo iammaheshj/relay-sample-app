@@ -24,3 +24,17 @@ test("Delete an item", async ({ page }) => {
   await page.getByRole("button", { name: "Delete Pay rent" }).click();
   await expect(page.getByRole("list", { name: "Items" })).not.toContainText("Pay rent");
 });
+
+test("Clear completed removes only done items", async ({ page }) => {
+  await page.getByLabel("New item").fill("a");
+  await page.getByRole("button", { name: "Add" }).click();
+  await page.getByLabel("New item").fill("b");
+  await page.getByRole("button", { name: "Add" }).click();
+
+  await page.getByRole("checkbox").first().check();
+
+  await page.getByRole("button", { name: "Clear completed" }).click();
+
+  await expect(page.getByRole("list", { name: "Items" })).toContainText("b");
+  await expect(page.getByRole("list", { name: "Items" })).not.toContainText("a");
+});
