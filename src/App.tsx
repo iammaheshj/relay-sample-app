@@ -1,5 +1,5 @@
 import { type FormEvent, useState } from "react";
-import { addTodo, remaining, removeTodo, type Todo, toggleTodo } from "./todos";
+import { addTodo, doneCount, remaining, removeTodo, type Todo, toggleTodo } from "./todos";
 
 export function App() {
   const [todos, setTodos] = useState<Todo[]>([]);
@@ -25,6 +25,7 @@ export function App() {
             <label>
               <input
                 type="checkbox"
+                aria-label={todo.title}
                 checked={todo.done}
                 onChange={() => setTodos((current) => toggleTodo(current, todo.id))}
               />{" "}
@@ -40,7 +41,9 @@ export function App() {
           </li>
         ))}
       </ul>
-      <p role="status">{remaining(todos)} left to do</p>
+      <p role="status">
+        {remaining(todos)} left to do, {doneCount(todos)} done
+      </p>
     </main>
   );
 }

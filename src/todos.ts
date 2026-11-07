@@ -24,3 +24,7 @@ export function removeTodo(todos: Todo[], id: number): Todo[] {
 export function remaining(todos: Todo[]): number {
   return todos.filter((t) => !t.done).length;
 }
+
+export function doneCount(todos: Todo[]): number {
+  return todos.filter((t) => t.done).length;
+}
