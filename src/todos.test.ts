@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { addTodo, remaining, removeTodo, toggleTodo } from "./todos";
+import { addTodo, remaining, removeTodo, togglePriority, toggleTodo } from "./todos";
 
 describe("addTodo", () => {
   it("adds a trimmed item that isn't done", () => {
-    expect(addTodo([], "  Pay rent ")).toEqual([{ id: 1, title: "Pay rent", done: false }]);
+    expect(addTodo([], "  Pay rent ")).toEqual([{ id: 1, title: "Pay rent", done: false, priority: false }]);
   });
 
   it("ignores a blank title", () => {
@@ -29,5 +29,26 @@ describe("toggleTodo and removeTodo", () => {
 
   it("counts items left to do", () => {
     expect(remaining(toggleTodo(list, 1))).toBe(1);
+  });
+});
+
+describe("togglePriority", () => {
+  it("toggles the chosen item as high priority", () => {
+    const list = addTodo([], "Pay rent");
+    expect(togglePriority(list, 1)).toEqual([{ id: 1, title: "Pay rent", done: false, priority: true }]);
+    expect(togglePriority(togglePriority(list, 1), 1)).toEqual([
+      { id: 1, title: "Pay rent", done: false, priority: false },
+    ]);
+  });
+
+  it("sorts high priority items first", () => {
+    const list = addTodo(addTodo([], "Buy milk"), "Pay rent");
+    const prioritized = togglePriority(list, 2);
+    expect(prioritized.map((t) => t.title)).toEqual(["Pay rent", "Buy milk"]);
+  });
+
+  it("preserves creation order within the same priority", () => {
+    const list = addTodo(addTodo([], "a"), "b");
+    expect(togglePriority(list, 1).map((t) => t.title)).toEqual(["a", "b"]);
   });
 });
