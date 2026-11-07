@@ -3,9 +3,7 @@ import { addTodo, remaining, removeTodo, toggleTodo } from "./todos";
 
 describe("addTodo", () => {
   it("adds a trimmed item that isn't done", () => {
-    expect(addTodo([], "  Pay rent ")).toEqual([
-      { id: 0, title: "Pay rent", done: false },
-    ]);
+    expect(addTodo([], "  Pay rent ")).toEqual([{ id: 0, title: "Pay rent", done: false }]);
   });
 
   it("ignores a blank title", () => {
@@ -15,6 +13,13 @@ describe("addTodo", () => {
   it("gives each item a new id", () => {
     const list = addTodo(addTodo([], "a"), "b");
     expect(list.map((t) => t.id)).toEqual([0, 1]);
+  });
+
+  it("does not reuse an id if the max id item was removed", () => {
+    const list = addTodo(addTodo([], "a"), "b");
+    const afterRemove = removeTodo(list, 1);
+    const afterAdd = addTodo(afterRemove, "c");
+    expect(afterAdd.map((t) => t.id)).toEqual([0, 2]);
   });
 });
 
