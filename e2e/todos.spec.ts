@@ -37,4 +37,7 @@ test("Clear completed removes only done items", async ({ page }) => {
 
   await expect(page.getByRole("list", { name: "Items" })).toContainText("b");
   await expect(page.getByRole("list", { name: "Items" })).not.toContainText("a");
+
+  // Button should disappear when there are no completed items.
+  await expect(page.getByRole("button", { name: "Clear completed" })).toHaveCount(0);
 });
