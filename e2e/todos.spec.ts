@@ -24,3 +24,25 @@ test("Delete an item", async ({ page }) => {
   await page.getByRole("button", { name: "Delete Pay rent" }).click();
   await expect(page.getByRole("list", { name: "Items" })).not.toContainText("Pay rent");
 });
+
+test("Rename an item", async ({ page }) => {
+  await page.getByLabel("New item").fill("Pay rnet");
+  await page.getByRole("button", { name: "Add" }).click();
+
+  await page.getByRole("button", { name: "Rename Pay rnet" }).click();
+  await page.getByLabel("New name for Pay rnet").fill("Pay rent");
+  await page.getByRole("button", { name: "Save" }).click();
+
+  await expect(page.getByRole("list", { name: "Items" })).toContainText("Pay rent");
+});
+
+test("A blank name keeps the old one", async ({ page }) => {
+  await page.getByLabel("New item").fill("Pay rent");
+  await page.getByRole("button", { name: "Add" }).click();
+
+  await page.getByRole("button", { name: "Rename Pay rent" }).click();
+  await page.getByLabel("New name for Pay rent").fill("   ");
+  await page.getByRole("button", { name: "Save" }).click();
+
+  await expect(page.getByRole("list", { name: "Items" })).toContainText("Pay rent");
+});
