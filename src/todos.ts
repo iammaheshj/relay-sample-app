@@ -16,7 +16,16 @@ export function addTodo(todos: Todo[], title: string): Todo[] {
 export function renameTodo(todos: Todo[], id: number, title: string): Todo[] {
   const trimmed = title.trim();
   if (!trimmed) return todos;
-  return todos.map((t) => (t.id === id ? { ...t, title: trimmed } : t));
+
+  let changed = false;
+  const next = todos.map((t) => {
+    if (t.id !== id) return t;
+    if (t.title === trimmed) return t;
+    changed = true;
+    return { ...t, title: trimmed };
+  });
+
+  return changed ? next : todos;
 }
 
 export function toggleTodo(todos: Todo[], id: number): Todo[] {
