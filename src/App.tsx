@@ -25,6 +25,7 @@ export function App() {
             <label>
               <input
                 type="checkbox"
+                aria-label={todo.title}
                 checked={todo.done}
                 onChange={() => setTodos((current) => toggleTodo(current, todo.id))}
               />{" "}
