@@ -9,8 +9,12 @@ export interface Todo {
 export function addTodo(todos: Todo[], title: string): Todo[] {
   const trimmed = title.trim();
   if (!trimmed) return todos;
+
+  // Collapse any internal whitespace (spaces, tabs, newlines) to single spaces.
+  const tidiedTitle = trimmed.replace(/\s+/g, " ");
+
   const id = todos.reduce((max, t) => Math.max(max, t.id), 0) + 1;
-  return [...todos, { id, title: trimmed, done: false }];
+  return [...todos, { id, title: tidiedTitle, done: false }];
 }
 
 export function toggleTodo(todos: Todo[], id: number): Todo[] {
