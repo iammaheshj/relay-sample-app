@@ -14,6 +14,10 @@ function sortTodos(todos: Todo[]): Todo[] {
   });
 }
 
+function hasTodoId(todos: Todo[], id: number): boolean {
+  return todos.some((t) => t.id === id);
+}
+
 export function addTodo(todos: Todo[], title: string): Todo[] {
   const trimmed = title.trim();
   if (!trimmed) return todos;
@@ -22,14 +26,17 @@ export function addTodo(todos: Todo[], title: string): Todo[] {
 }
 
 export function toggleTodo(todos: Todo[], id: number): Todo[] {
+  if (!hasTodoId(todos, id)) return todos;
   return sortTodos(todos.map((t) => (t.id === id ? { ...t, done: !t.done } : t)));
 }
 
 export function togglePriority(todos: Todo[], id: number): Todo[] {
+  if (!hasTodoId(todos, id)) return todos;
   return sortTodos(todos.map((t) => (t.id === id ? { ...t, priority: !t.priority } : t)));
 }
 
 export function removeTodo(todos: Todo[], id: number): Todo[] {
+  if (!hasTodoId(todos, id)) return todos;
   return sortTodos(todos.filter((t) => t.id !== id));
 }
 

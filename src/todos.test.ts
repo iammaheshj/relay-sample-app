@@ -3,9 +3,7 @@ import { addTodo, remaining, removeTodo, togglePriority, toggleTodo } from "./to
 
 describe("addTodo", () => {
   it("adds a trimmed item that isn't done", () => {
-    expect(addTodo([], "  Pay rent ")).toEqual([
-      { id: 1, title: "Pay rent", done: false, priority: false },
-    ]);
+    expect(addTodo([], "  Pay rent ")).toEqual([{ id: 1, title: "Pay rent", done: false, priority: false }]);
   });
 
   it("ignores a blank title", () => {
@@ -40,5 +38,14 @@ describe("toggleTodo, togglePriority and removeTodo", () => {
   it("sorts high priority items first", () => {
     const updated = togglePriority(list, 2);
     expect(updated.map((t) => t.title)).toEqual(["Pay rent", "Buy milk"]);
+  });
+
+  it("returns the same array instance when toggling an unknown id", () => {
+    expect(togglePriority(list, 999)).toBe(list);
+    expect(toggleTodo(list, 999)).toBe(list);
+  });
+
+  it("returns the same array instance when removing an unknown id", () => {
+    expect(removeTodo(list, 999)).toBe(list);
   });
 });
