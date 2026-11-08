@@ -11,10 +11,13 @@ test("Clear completed removes only done items", async ({ page }) => {
   await page.getByLabel("New item").fill("b");
   await page.getByRole("button", { name: "Add" }).click();
 
-  const items = page.getByRole("list", { name: "Items" });
-  await expect(items).toContainText(["a", "b"]);
+  const itemA = page.getByRole("listitem").filter({ hasText: /^\s*a\s*/ });
+  const itemB = page.getByRole("listitem").filter({ hasText: /^\s*b\s*/ });
 
-  await page.getByRole("listitem").filter({ hasText: "a" }).getByRole("checkbox").check();
+  await expect(itemA).toHaveCount(1);
+  await expect(itemB).toHaveCount(1);
+
+  await itemA.getByRole("checkbox").check();
   await expect(page.getByRole("status")).toHaveText("1 left to do");
 
   // When I choose "Clear completed"
@@ -23,12 +26,10 @@ test("Clear completed removes only done items", async ({ page }) => {
   await clearCompleted.click();
 
   // Then only "b" is in the list
-  await expect(items).toContainText("b");
-  await expect(items).not.toContainText("a");
   await expect(page.getByRole("listitem")).toHaveCount(1);
   await expect(page.getByRole("listitem")).toContainText(["b"]);
+  await expect(page.getByRole("listitem")).not.toContainText(["a"]);
 
-  // And the clear button should no longer be shown (no completed items remain)
   await expect(page.getByRole("button", { name: "Clear completed" })).toHaveCount(0);
   await expect(page.getByRole("status")).toHaveText("1 left to do");
 });
