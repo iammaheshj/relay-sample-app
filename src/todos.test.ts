@@ -3,7 +3,7 @@ import { addTodo, remaining, removeTodo, toggleTodo } from "./todos";
 
 describe("addTodo", () => {
   it("adds a trimmed item that isn't done", () => {
-    expect(addTodo([], "  Pay rent ")).toEqual([{ id: 1, title: "Pay rent", done: false }]);
+    expect(addTodo([], "  Pay rent ")).toEqual([{ id: 0, title: "Pay rent", done: false }]);
   });
 
   it("ignores a blank title", () => {
@@ -12,7 +12,13 @@ describe("addTodo", () => {
 
   it("gives each item a new id", () => {
     const list = addTodo(addTodo([], "a"), "b");
-    expect(list.map((t) => t.id)).toEqual([1, 2]);
+    expect(list.map((t) => t.id)).toEqual([0, 1]);
+  });
+
+  it("uses the next id even if items are removed", () => {
+    const list = addTodo(addTodo([], "a"), "b");
+    const removed = removeTodo(list, 0);
+    expect(addTodo(removed, "c").map((t) => t.id)).toEqual([1, 2]);
   });
 });
 
@@ -20,14 +26,14 @@ describe("toggleTodo and removeTodo", () => {
   const list = addTodo(addTodo([], "a"), "b");
 
   it("marks only the chosen item done", () => {
-    expect(toggleTodo(list, 2).map((t) => t.done)).toEqual([false, true]);
+    expect(toggleTodo(list, 1).map((t) => t.done)).toEqual([false, true]);
   });
 
   it("removes only the chosen item", () => {
-    expect(removeTodo(list, 1).map((t) => t.title)).toEqual(["b"]);
+    expect(removeTodo(list, 0).map((t) => t.title)).toEqual(["b"]);
   });
 
   it("counts items left to do", () => {
-    expect(remaining(toggleTodo(list, 1))).toBe(1);
+    expect(remaining(toggleTodo(list, 0))).toBe(1);
   });
 });
