@@ -45,4 +45,10 @@ describe("priority", () => {
     const updated = togglePriority(list, 2);
     expect(updated.map((t) => t.title)).toEqual(["Pay rent", "Buy milk"]);
   });
+
+  it("keeps sorting stable by id among same-priority items", () => {
+    const list = addTodo(addTodo(addTodo([], "a"), "b"), "c");
+    const updated = togglePriority(list, 2);
+    expect(updated.map((t) => t.id)).toEqual([2, 1, 3]);
+  });
 });
