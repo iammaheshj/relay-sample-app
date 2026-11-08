@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { addTodo, remaining, removeTodo, toggleTodo } from "./todos";
+import { addTodo, remaining, removeTodo, renameTodo, toggleTodo } from "./todos";
 
 describe("addTodo", () => {
   it("adds a trimmed item that isn't done", () => {
@@ -13,6 +13,18 @@ describe("addTodo", () => {
   it("gives each item a new id", () => {
     const list = addTodo(addTodo([], "a"), "b");
     expect(list.map((t) => t.id)).toEqual([1, 2]);
+  });
+});
+
+describe("renameTodo", () => {
+  it("renames a todo to the trimmed title", () => {
+    const list = addTodo([], "Pay rnet");
+    expect(renameTodo(list, 1, "  Pay rent ")).toEqual([{ id: 1, title: "Pay rent", done: false }]);
+  });
+
+  it("keeps the old title for a blank name", () => {
+    const list = addTodo([], "Pay rent");
+    expect(renameTodo(list, 1, "   ")).toEqual(list);
   });
 });
 
