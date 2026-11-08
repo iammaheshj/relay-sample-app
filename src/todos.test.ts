@@ -6,6 +6,16 @@ describe("addTodo", () => {
     expect(addTodo([], "  Pay rent ")).toEqual([{ id: 1, title: "Pay rent", done: false }]);
   });
 
+  it("replaces line breaks and repeated spaces with single spaces", () => {
+    expect(addTodo([], "Buy   milk\n and  eggs")).toEqual([
+      { id: 1, title: "Buy milk and eggs", done: false },
+    ]);
+  });
+
+  it("treats whitespace-only titles as blank even if they contain line breaks", () => {
+    expect(addTodo([], "\n\t  \n")).toEqual([]);
+  });
+
   it("ignores a blank title", () => {
     expect(addTodo([], "   ")).toEqual([]);
   });
