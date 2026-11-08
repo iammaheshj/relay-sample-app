@@ -17,6 +17,8 @@ test("Mark an item as high priority", async ({ page }) => {
   await payRentItem.getByRole("checkbox", { name: "High priority" }).check();
 
   // Then "Pay rent" shows a high priority label
-  await expect(payRentItem.getByLabel("High priority")).toBeVisible();
-  await expect(payRentItem.getByLabel("High priority")).toHaveText("High priority");
+  const highPriorityLabel = payRentItem.getByLabel("High priority").and(
+    payRentItem.getByText("High priority")
+  );
+  await expect(highPriorityLabel).toBeVisible();
 });
