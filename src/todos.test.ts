@@ -14,6 +14,12 @@ describe("addTodo", () => {
     const list = addTodo(addTodo([], "a"), "b");
     expect(list.map((t) => t.id)).toEqual([0, 1]);
   });
+
+  it("uses the next id even if items are removed", () => {
+    const list = addTodo(addTodo([], "a"), "b");
+    const removed = removeTodo(list, 0);
+    expect(addTodo(removed, "c").map((t) => t.id)).toEqual([1, 2]);
+  });
 });
 
 describe("toggleTodo and removeTodo", () => {
