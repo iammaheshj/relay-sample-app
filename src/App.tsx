@@ -1,4 +1,4 @@
-import { type FormEvent, useState } from "react";
+import { type FormEvent, useId, useState } from "react";
 import {
   addTodo,
   remaining,
@@ -27,34 +27,43 @@ export function App() {
         <button type="submit">Add</button>
       </form>
       <ul aria-label="Items">
-        {todos.map((todo) => (
-          <li key={todo.id}>
-            <label>
-              <input
-                type="checkbox"
-                checked={todo.done}
-                onChange={() => setTodos((current) => toggleTodo(current, todo.id))}
-              />{" "}
-              <span style={{ textDecoration: todo.done ? "line-through" : "none" }}>{todo.title}</span>
-            </label>{" "}
-            <label>
-              <input
-                type="checkbox"
-                checked={todo.priority}
-                onChange={() => setTodos((current) => togglePriority(current, todo.id))}
-              />{" "}
-              High priority
-            </label>{" "}
-            {todo.priority ? <span aria-label="High priority">High priority</span> : null}{" "}
-            <button
-              type="button"
-              aria-label={`Delete ${todo.title}`}
-              onClick={() => setTodos((current) => removeTodo(current, todo.id))}
-            >
-              Delete
-            </button>
-          </li>
-        ))}
+        {todos.map((todo) => {
+          const priorityInputId = `priority-${todo.id}`;
+          const priorityLabelId = `priority-label-${todo.id}`;
+
+          return (
+            <li key={todo.id}>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={todo.done}
+                  onChange={() => setTodos((current) => toggleTodo(current, todo.id))}
+                />{" "}
+                <span style={{ textDecoration: todo.done ? "line-through" : "none" }}>{todo.title}</span>
+              </label>{" "}
+              <div>
+                <input
+                  id={priorityInputId}
+                  type="checkbox"
+                  checked={todo.priority}
+                  aria-labelledby={priorityLabelId}
+                  onChange={() => setTodos((current) => togglePriority(current, todo.id))}
+                />{" "}
+                <label id={priorityLabelId} htmlFor={priorityInputId}>
+                  High priority
+                </label>
+              </div>{" "}
+              {todo.priority ? <span aria-label="High priority">High priority</span> : null}{" "}
+              <button
+                type="button"
+                aria-label={`Delete ${todo.title}`}
+                onClick={() => setTodos((current) => removeTodo(current, todo.id))}
+              >
+                Delete
+              </button>
+            </li>
+          );
+        })}
       </ul>
       <p role="status">{remaining(todos)} left to do</p>
     </main>

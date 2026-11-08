@@ -49,4 +49,12 @@ describe("togglePriority", () => {
     const next = togglePriority(list, 2);
     expect(next.map((t) => t.title)).toEqual(["Pay rent", "Buy milk"]);
   });
+
+  it("keeps relative order within the same priority", () => {
+    const list = addTodo(addTodo(addTodo([], "a"), "b"), "c");
+    const next = togglePriority(togglePriority(list, 3), 1);
+
+    // a and c are high priority (ids 1 and 3); they should keep id order.
+    expect(next.map((t) => t.title)).toEqual(["a", "c", "b"]);
+  });
 });
