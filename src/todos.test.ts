@@ -12,6 +12,10 @@ describe("addTodo", () => {
     ]);
   });
 
+  it("treats whitespace-only titles as blank even if they contain line breaks", () => {
+    expect(addTodo([], "\n\t  \n")).toEqual([]);
+  });
+
   it("ignores a blank title", () => {
     expect(addTodo([], "   ")).toEqual([]);
   });

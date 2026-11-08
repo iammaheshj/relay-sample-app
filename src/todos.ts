@@ -6,11 +6,16 @@ export interface Todo {
   done: boolean;
 }
 
-export function addTodo(todos: Todo[], title: string): Todo[] {
-  const trimmed = title.trim();
-  if (!trimmed) return todos;
+function tidyTitle(title: string): string {
+  // Trim ends, then collapse any run of whitespace (spaces, tabs, newlines, etc.)
+  // into a single space so titles never contain line breaks or repeated spacing.
+  return title.trim().replace(/\s+/g, " ");
+}
 
-  const tidied = trimmed.replace(/\s+/g, " ");
+export function addTodo(todos: Todo[], title: string): Todo[] {
+  const tidied = tidyTitle(title);
+  if (!tidied) return todos;
+
   const id = todos.reduce((max, t) => Math.max(max, t.id), 0) + 1;
   return [...todos, { id, title: tidied, done: false }];
 }
