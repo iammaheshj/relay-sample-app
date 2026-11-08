@@ -39,4 +39,10 @@ describe("toggleTodo, togglePriority and removeTodo", () => {
     expect(next[0]?.title).toBe("Pay rent");
     expect(next[0]?.priority).toBe(true);
   });
+
+  it("keeps priority items sorted first after deletion", () => {
+    const todos = togglePriority(addTodo(addTodo([], "Buy milk"), "Pay rent"), 2);
+    const next = removeTodo(todos, 2);
+    expect(next.map((t) => t.title)).toEqual(["Pay rent"]);
+  });
 });

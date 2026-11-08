@@ -30,7 +30,8 @@ export function togglePriority(todos: Todo[], id: number): Todo[] {
 }
 
 export function removeTodo(todos: Todo[], id: number): Todo[] {
-  return todos.filter((t) => t.id !== id);
+  // Keep list ordering consistent after deletion.
+  return sortTodos(todos.filter((t) => t.id !== id));
 }
 
 export function remaining(todos: Todo[]): number {
