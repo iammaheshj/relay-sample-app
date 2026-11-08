@@ -6,6 +6,12 @@ describe("addTodo", () => {
     expect(addTodo([], "  Pay rent ")).toEqual([{ id: 1, title: "Pay rent", done: false }]);
   });
 
+  it("collapses runs of whitespace (including newlines) into single spaces", () => {
+    expect(addTodo([], "Buy   milk\n and  eggs")).toEqual([
+      { id: 1, title: "Buy milk and eggs", done: false },
+    ]);
+  });
+
   it("ignores a blank title", () => {
     expect(addTodo([], "   ")).toEqual([]);
   });
@@ -13,6 +19,10 @@ describe("addTodo", () => {
   it("gives each item a new id", () => {
     const list = addTodo(addTodo([], "a"), "b");
     expect(list.map((t) => t.id)).toEqual([1, 2]);
+  });
+
+  it("treats whitespace-only pasted titles as blank", () => {
+    expect(addTodo([], "\n\t\r")).toEqual([]);
   });
 });
 
