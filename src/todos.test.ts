@@ -33,9 +33,15 @@ describe("toggleTodo and removeTodo", () => {
 });
 
 describe("clearCompleted", () => {
-  it("removes only done items", () => {
+  it("removes only done items and preserves ids/titles of remaining", () => {
     const list = addTodo(addTodo([], "a"), "b");
     const doneA = toggleTodo(list, 1);
-    expect(clearCompleted(doneA).map((t) => t.title)).toEqual(["b"]);
+
+    expect(clearCompleted(doneA)).toEqual([{ id: 2, title: "b", done: false }]);
+  });
+
+  it("is a no-op when nothing is completed", () => {
+    const list = addTodo(addTodo([], "a"), "b");
+    expect(clearCompleted(list)).toEqual(list);
   });
 });
