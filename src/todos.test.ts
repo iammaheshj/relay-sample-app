@@ -14,6 +14,12 @@ describe("addTodo", () => {
     const list = addTodo(addTodo([], "a"), "b");
     expect(list.map((t) => t.id)).toEqual([1, 2]);
   });
+
+  it("cuts a long title to 100 characters", () => {
+    const longTitle = "a".repeat(150);
+    const list = addTodo([], longTitle);
+    expect(list[0]?.title).toHaveLength(100);
+  });
 });
 
 describe("toggleTodo and removeTodo", () => {
