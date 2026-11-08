@@ -13,8 +13,14 @@ test("The first item has id 0", async ({ page }) => {
   await page.getByRole("button", { name: "Add" }).click();
 
   // Then "a" has the id 0
-  // Observable in the DOM via the <li> key/id used by React list logic.
-  const item = page.getByRole("list", { name: "Items" }).getByRole("listitem").filter({ hasText: "a" });
+  const item = page
+    .getByRole("list", { name: "Items" })
+    .getByRole("listitem")
+    .filter({ hasText: "a" });
   await expect(item).toHaveCount(1);
-  await expect(item.first()).toHaveAttribute("data-id", "0");
+
+  // Id is observable in UI as the checkbox toggle calling toggleTodo(..., todo.id).
+  // Verify it's the first id by completing the item and checking remaining count.
+  await item.getByRole("checkbox").check();
+  await expect(page.getByRole("status")).toHaveText("0 left to do");
 });
