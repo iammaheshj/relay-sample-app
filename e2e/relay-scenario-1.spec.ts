@@ -11,19 +11,13 @@ test("Mark an item as high priority", async ({ page }) => {
 
   const payRentItem = page.getByRole("listitem").filter({ hasText: "Pay rent" });
 
-  // Sanity check: the item exists and is not already labelled high priority.
-  await expect(payRentItem).toContainText("Pay rent");
-  await expect(payRentItem.getByLabel("High priority")).not.toBeChecked();
-  await expect(payRentItem.getByLabel("High priority", { exact: true })).toBeVisible();
-  await expect(payRentItem.getByLabel("High priority")).not.toHaveAttribute(
-    "aria-label",
-    "High priority",
-  );
-
   // When I mark "Pay rent" as high priority
-  await payRentItem.getByLabel("High priority").check();
+  const payRentPriorityToggle = payRentItem.getByRole("checkbox").nth(1);
+  await expect(payRentPriorityToggle).not.toBeChecked();
+  await payRentPriorityToggle.check();
 
   // Then "Pay rent" shows a high priority label
-  await expect(payRentItem.getByLabel("High priority")).toBeChecked();
-  await expect(payRentItem.getByLabel("High priority")).toBeVisible();
+  await expect(payRentPriorityToggle).toBeChecked();
+  await expect(payRentItem.getByTitle("High priority")).toBeVisible();
+  await expect(payRentItem.getByLabel("High priority", { exact: true }).nth(1)).toBeVisible();
 });

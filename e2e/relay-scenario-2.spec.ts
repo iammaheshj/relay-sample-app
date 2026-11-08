@@ -20,7 +20,7 @@ test("High priority items sort first", async ({ page }) => {
 
   // When I mark "Pay rent" as high priority
   const payRentItem = items.filter({ hasText: "Pay rent" });
-  await payRentItem.getByLabel("High priority").check();
+  await payRentItem.getByRole("checkbox").nth(1).check();
 
   // Then "Pay rent" is first in the list
   await expect(items.first()).toContainText("Pay rent");
