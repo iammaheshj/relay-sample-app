@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { addTodo, remaining, removeTodo, togglePriority, toggleTodo } from "./todos";
+import { addTodo, remaining, removeTodo, sortTodos, togglePriority, toggleTodo } from "./todos";
 
 describe("addTodo", () => {
   it("adds a trimmed item that isn't done", () => {
@@ -45,5 +45,14 @@ describe("togglePriority", () => {
     const list = addTodo(addTodo([], "Buy milk"), "Pay rent");
     const updated = togglePriority(list, 2);
     expect(updated.map((t) => t.title)).toEqual(["Pay rent", "Buy milk"]);
+  });
+});
+
+describe("sortTodos", () => {
+  it("does not mutate the input array", () => {
+    const list = addTodo(addTodo([], "Buy milk"), "Pay rent");
+    const snapshot = [...list];
+    sortTodos(list);
+    expect(list).toEqual(snapshot);
   });
 });

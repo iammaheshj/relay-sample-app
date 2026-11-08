@@ -31,9 +31,12 @@ export function remaining(todos: Todo[]): number {
   return todos.filter((t) => !t.done).length;
 }
 
+function compareTodos(a: Todo, b: Todo): number {
+  // High priority items first, then keep a stable (creation) order within each group.
+  if (a.priority !== b.priority) return a.priority ? -1 : 1;
+  return a.id - b.id;
+}
+
 export function sortTodos(todos: Todo[]): Todo[] {
-  return [...todos].sort((a, b) => {
-    if (a.priority !== b.priority) return a.priority ? -1 : 1;
-    return a.id - b.id;
-  });
+  return [...todos].sort(compareTodos);
 }
