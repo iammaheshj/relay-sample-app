@@ -42,9 +42,14 @@ describe("high priority", () => {
     ]);
   });
 
-  it("sorts high priority items first", () => {
+  it("sorts high priority items first when reprioritizing", () => {
     const list = addTodo(addTodo([], "Buy milk"), "Pay rent");
     const reprioritized = togglePriority(list, 2);
     expect(reprioritized.map((t) => t.title)).toEqual(["Pay rent", "Buy milk"]);
+  });
+
+  it("does not reorder items when adding non-priority items", () => {
+    const list = addTodo(addTodo([], "Buy milk"), "Pay rent");
+    expect(list.map((t) => t.title)).toEqual(["Buy milk", "Pay rent"]);
   });
 });
