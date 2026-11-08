@@ -18,5 +18,7 @@ test("Show an error when the email is invalid", async ({ page }) => {
   await page.getByRole("button", { name: "Create user" }).click();
 
   await expect(page.getByRole("alert")).toHaveText("Email is invalid");
-  await expect(page.getByRole("list", { name: "Users" })).toBeEmpty();
+
+  // The list is always rendered; assert it has no list items rather than expecting an empty element.
+  await expect(page.getByRole("list", { name: "Users" }).getByRole("listitem")).toHaveCount(0);
 });
