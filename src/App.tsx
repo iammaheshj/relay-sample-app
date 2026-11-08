@@ -70,7 +70,7 @@ export function App() {
 
       <section aria-labelledby="users-heading">
         <h2 id="users-heading">Users</h2>
-        <form onSubmit={submitUser} aria-describedby={userError ? userErrorId : undefined}>
+        <form onSubmit={submitUser}>
           <div>
             <label htmlFor="user-name">Name</label>{" "}
             <input
