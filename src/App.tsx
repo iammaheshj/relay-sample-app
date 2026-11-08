@@ -1,9 +1,10 @@
-import { type FormEvent, useState } from "react";
+import { type FormEvent, useId, useState } from "react";
 import { addTodo, remaining, removeTodo, renameTodo, type Todo, toggleTodo } from "./todos";
 
 export function App() {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [title, setTitle] = useState("");
+  const renameHintId = useId();
 
   function submit(event: FormEvent) {
     event.preventDefault();
@@ -19,6 +20,9 @@ export function App() {
         <input id="new-todo" value={title} onChange={(e) => setTitle(e.target.value)} />{" "}
         <button type="submit">Add</button>
       </form>
+      <p id={renameHintId} style={{ fontSize: "0.875rem" }}>
+        Tip: edit a name and tab away (or click elsewhere) to save.
+      </p>
       <ul aria-label="Items">
         {todos.map((todo) => (
           <li key={todo.id}>
@@ -38,9 +42,10 @@ export function App() {
               Delete
             </button>{" "}
             <label>
-              <span className="sr-only">Rename {todo.title}</span>
+              <span>Rename</span>{" "}
               <input
                 aria-label={`Rename ${todo.title}`}
+                aria-describedby={renameHintId}
                 defaultValue={todo.title}
                 onBlur={(e) => setTodos((current) => renameTodo(current, todo.id, e.target.value))}
               />
