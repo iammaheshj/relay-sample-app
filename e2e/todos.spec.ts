@@ -14,7 +14,12 @@ test("Add an item", async ({ page }) => {
 test("Complete an item", async ({ page }) => {
   await page.getByLabel("New item").fill("Pay rent");
   await page.getByRole("button", { name: "Add" }).click();
-  await page.getByRole("checkbox").check();
+
+  const itemsList = page.getByRole("list", { name: "Items" });
+  const payRentItem = itemsList.getByRole("listitem").filter({ hasText: "Pay rent" });
+  await expect(payRentItem).toHaveCount(1);
+
+  await payRentItem.getByRole("checkbox", { name: "Pay rent" }).check();
   await expect(page.getByRole("status")).toHaveText("0 left to do");
 });
 

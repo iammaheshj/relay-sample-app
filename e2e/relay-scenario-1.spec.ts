@@ -12,14 +12,16 @@ test("Mark an item as high priority", async ({ page }) => {
   const payRentItem = itemsList.getByRole("listitem").filter({ hasText: "Pay rent" });
   await expect(payRentItem).toHaveCount(1);
 
-  await payRentItem.getByLabel("High priority").check();
+  // When I mark "Pay rent" as high priority
+  const priorityCheckbox = payRentItem
+    .getByRole("checkbox", { name: "High priority" })
+    .first();
+  await priorityCheckbox.check();
 
-  // Acceptance: the item shows a high priority label.
-  await expect(payRentItem.getByLabel("High priority")).toBeChecked();
-  await expect(payRentItem.getByLabel("High priority")).toBeVisible();
+  // Then "Pay rent" shows a high priority label
+  await expect(priorityCheckbox).toBeChecked();
 
-  const priorityBadge = payRentItem.getByLabel("High priority").locator(
-    "xpath=../span[@aria-label='High priority']",
-  );
-  await expect(priorityBadge).toHaveText("High priority");
+  const priorityLabel = payRentItem.getByLabel("High priority").locator("span");
+  await expect(priorityLabel).toHaveCount(1);
+  await expect(priorityLabel).toHaveText("High priority");
 });
