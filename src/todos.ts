@@ -26,6 +26,9 @@ export function remaining(todos: Todo[]): number {
 }
 
 export function statusText(remainingCount: number): string {
+  if (!Number.isFinite(remainingCount) || remainingCount < 0) {
+    throw new Error("remainingCount must be a non-negative finite number");
+  }
   if (remainingCount === 0) return "Nothing left to do";
   return `${remainingCount} left to do`;
 }

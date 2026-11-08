@@ -40,4 +40,10 @@ describe("statusText", () => {
   it("uses the previous count format otherwise", () => {
     expect(statusText(2)).toBe("2 left to do");
   });
+
+  it("rejects invalid counts", () => {
+    expect(() => statusText(-1)).toThrow();
+    expect(() => statusText(Number.NaN)).toThrow();
+    expect(() => statusText(Number.POSITIVE_INFINITY)).toThrow();
+  });
 });
