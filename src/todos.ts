@@ -4,17 +4,23 @@ export interface Todo {
   id: number;
   title: string;
   done: boolean;
+  priority: boolean;
 }
 
 export function addTodo(todos: Todo[], title: string): Todo[] {
   const trimmed = title.trim();
   if (!trimmed) return todos;
   const id = todos.reduce((max, t) => Math.max(max, t.id), 0) + 1;
-  return [...todos, { id, title: trimmed, done: false }];
+  return [...todos, { id, title: trimmed, done: false, priority: false }];
 }
 
 export function toggleTodo(todos: Todo[], id: number): Todo[] {
   return todos.map((t) => (t.id === id ? { ...t, done: !t.done } : t));
+}
+
+export function togglePriority(todos: Todo[], id: number): Todo[] {
+  const updated = todos.map((t) => (t.id === id ? { ...t, priority: !t.priority } : t));
+  return sortTodos(updated);
 }
 
 export function removeTodo(todos: Todo[], id: number): Todo[] {
@@ -23,4 +29,14 @@ export function removeTodo(todos: Todo[], id: number): Todo[] {
 
 export function remaining(todos: Todo[]): number {
   return todos.filter((t) => !t.done).length;
+}
+
+function compareTodos(a: Todo, b: Todo): number {
+  // High priority items first, then keep a stable (creation) order within each group.
+  if (a.priority !== b.priority) return a.priority ? -1 : 1;
+  return a.id - b.id;
+}
+
+export function sortTodos(todos: Todo[]): Todo[] {
+  return [...todos].sort(compareTodos);
 }
