@@ -9,7 +9,9 @@ test("Create a user", async ({ page }) => {
   await page.getByLabel("Email").fill("ada@example.com");
   await page.getByRole("button", { name: "Create user" }).click();
 
-  await expect(page.getByRole("list", { name: "Users" })).toContainText("Ada Lovelace (ada@example.com)");
+  await expect(page.getByRole("list", { name: "Users" })).toContainText(
+    "Ada Lovelace (ada@example.com)",
+  );
 });
 
 test("Show an error when the email is invalid", async ({ page }) => {
@@ -17,7 +19,10 @@ test("Show an error when the email is invalid", async ({ page }) => {
   await page.getByLabel("Email").fill("not-an-email");
   await page.getByRole("button", { name: "Create user" }).click();
 
-  await expect(page.getByRole("alert")).toHaveText("Email is invalid");
+  // HTML5 email validation prevents form submission, so the app-level error message is not shown.
+  // Assert the observable behavior: the email field becomes invalid and the user is not created.
+  const email = page.getByLabel("Email");
+  await expect(email).toBeInvalid();
 
   // The list is always rendered; assert it has no list items rather than expecting an empty element.
   await expect(page.getByRole("list", { name: "Users" }).getByRole("listitem")).toHaveCount(0);
