@@ -14,6 +14,7 @@ test("Sample behaviour", async ({ page }) => {
 
   // Then the sample result is shown
   const items = page.getByRole("list", { name: "Items" });
-  await expect(items).toContainText("Sample item");
+  const addedItem = items.getByRole("listitem").filter({ hasText: "Sample item" });
+  await expect(addedItem).toHaveCount(1);
   await expect(page.getByRole("status")).toHaveText("1 left to do");
 });
