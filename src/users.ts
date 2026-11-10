@@ -3,16 +3,11 @@ export interface User {
   email: string;
 }
 
-export type CreateUserError =
-  | "NAME_REQUIRED"
-  | "EMAIL_REQUIRED"
-  | "EMAIL_INVALID"
-  | "EMAIL_EXISTS";
+export type CreateUserError = "NAME_REQUIRED" | "EMAIL_REQUIRED" | "EMAIL_INVALID" | "EMAIL_EXISTS";
 
-export interface CreateUserResult {
-  user?: User;
-  error?: CreateUserError;
-}
+type CreateUserSuccess = { user: User; error?: never };
+type CreateUserFailure = { user?: never; error: CreateUserError };
+export type CreateUserResult = CreateUserSuccess | CreateUserFailure;
 
 export function normalizeName(name: string): string {
   return name.trim();
@@ -29,13 +24,16 @@ export function isValidEmail(email: string): boolean {
   // - no spaces
   if (!email) return false;
   if (/\s/.test(email)) return false;
+
   const at = email.indexOf("@");
   if (at <= 0) return false;
   if (email.indexOf("@", at + 1) !== -1) return false;
+
   const domain = email.slice(at + 1);
   const dot = domain.indexOf(".");
   if (dot <= 0) return false;
   if (dot === domain.length - 1) return false;
+
   return true;
 }
 
@@ -64,5 +62,10 @@ export function errorMessage(error: CreateUserError): string {
       return "Email is invalid";
     case "EMAIL_EXISTS":
       return "Email already exists";
+    default: {
+      // Compile-time exhaustiveness; runtime fallback
+      const _exhaustive: never = error;
+      return _exhaustive;
+    }
   }
 }

@@ -26,7 +26,8 @@ export function App() {
       return;
     }
 
-    setUsers((current) => [...current, result.user!]);
+    // createUser guarantees user is present when there's no error
+    setUsers((current) => [...current, result.user]);
     setUserAlert(null);
   }
 
