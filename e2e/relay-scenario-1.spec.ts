@@ -7,6 +7,7 @@ test.beforeEach(async ({ page }) => {
 test("Create a user with valid name and email adds the user to the Users list", async ({ page }) => {
   const usersList = page.getByRole("list", { name: "Users" });
 
+  // The empty list must be visibly rendered.
   await expect(usersList).toBeVisible();
   await expect(usersList.getByRole("listitem")).toHaveCount(0);
 
