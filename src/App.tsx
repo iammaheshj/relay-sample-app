@@ -26,7 +26,6 @@ export function App() {
       return;
     }
 
-    // createUser guarantees user is present when there's no error
     setUsers((current) => [...current, result.user]);
     setUserAlert(null);
   }
@@ -70,16 +69,11 @@ export function App() {
         <input id="user-name" value={name} onChange={(e) => setName(e.target.value)} />
         <br />
         <label htmlFor="user-email">Email</label>{" "}
-        <input
-          id="user-email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          style={{ display: "block" }}
-        />{" "}
+        <input id="user-email" value={email} onChange={(e) => setEmail(e.target.value)} />
         <button type="submit">Create user</button>
       </form>
       {userAlert ? <p role="alert">{userAlert}</p> : null}
-      <ul aria-label="Users">
+      <ul aria-label="Users" style={{ display: "block" }}>
         {users.map((u) => (
           <li key={u.email}>
             {u.name} ({u.email})
