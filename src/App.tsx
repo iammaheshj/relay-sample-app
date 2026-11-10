@@ -70,7 +70,12 @@ export function App() {
         <input id="user-name" value={name} onChange={(e) => setName(e.target.value)} />
         <br />
         <label htmlFor="user-email">Email</label>{" "}
-        <input id="user-email" value={email} onChange={(e) => setEmail(e.target.value)} />{" "}
+        <input
+          id="user-email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          style={{ display: "block" }}
+        />{" "}
         <button type="submit">Create user</button>
       </form>
       {userAlert ? <p role="alert">{userAlert}</p> : null}
