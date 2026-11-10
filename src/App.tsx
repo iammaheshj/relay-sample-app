@@ -73,7 +73,7 @@ export function App() {
         <button type="submit">Create user</button>
       </form>
       {userAlert ? <p role="alert">{userAlert}</p> : null}
-      <ul aria-label="Users" style={{ display: "block" }}>
+      <ul aria-label="Users" style={{ minHeight: "1.5rem" }}>
         {users.map((u) => (
           <li key={u.email}>
             {u.name} ({u.email})
