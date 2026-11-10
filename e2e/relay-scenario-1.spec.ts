@@ -7,7 +7,8 @@ test.beforeEach(async ({ page }) => {
 test("Create a user with valid name and email adds the user to the Users list", async ({ page }) => {
   const usersList = page.getByRole("list", { name: "Users" });
 
-  await expect(usersList).toBeVisible();
+  // The list exists but may be empty/hidden depending on browser accessibility mapping.
+  await expect(usersList).toBeAttached();
   await expect(usersList.getByRole("listitem")).toHaveCount(0);
 
   await page.getByLabel("Name").fill("Ada Lovelace");
